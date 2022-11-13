@@ -13,6 +13,12 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,      
         ws: true,
+      },
+      '/static': {
+        target: process.env.API_ROOT,
+        changeOrigin: true,
+        secure: false,      
+        ws: true,
       }
     }
   }
