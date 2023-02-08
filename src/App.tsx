@@ -1,33 +1,99 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
-import './App.css'
+import ColumnDisplay from './layouts/ColumnDisplay'
+import httpService from './services/httpClient'
+import ExamCard from './components/ExamCard'
+import Navbar from './layouts/Navbar'
+import LoginView from './views/Login'
+import Choices from './components/ui/Choices'
+import ExamGroupCard from './components/ExamGroupCard'
+import KeySheetForm from './layouts/KeySheetForm'
+import ExamGroupForm from './layouts/ExamGroupForm'
+
+import {
+  Outlet,
+  RouterProvider,
+  RootRoute,
+  Route, 
+  ReactRouter,
+  Link,
+  useMatch,
+} from '@tanstack/react-router'
+
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
+import ExamForm from './layouts/ExamForm'
+import ExamGroupCreation from './views/ExamGroupCreation'
+import KeySheetCreation from './views/KeySheetCreation'
+import ExamCreationWizard from './views/ExamCreationWizard'
+
+const rootRoute = new RootRoute({
+  component: () => (
+    <>
+    <Outlet/>
+    <Navbar/>
+    </>
+  ),
+})
+
+const indexRoute = new Route({
+  getParentRoute: () => rootRoute, 
+  path: '/'
+})
+
+const examWizardRoute = new Route({
+  getParentRoute: () => rootRoute, 
+  path: 'examwizard',
+  component: ExamCreationWizard
+})
+
+const examGroupWizardRoute = new Route({
+  getParentRoute: () => rootRoute, 
+  path: 'examgroupwiz',
+  component: ExamGroupCreation
+})
+
+const keySheetRoute = new Route({
+  getParentRoute: () => rootRoute, 
+  path: 'key',
+  component: KeySheetCreation
+})
+
+const statsRoute = new Route({
+  getParentRoute: () => rootRoute, 
+  path: 'stats',
+  component: () => (<></>)
+})
+
+const routeTree = rootRoute.addChildren([
+  indexRoute, 
+  examWizardRoute,
+  examGroupWizardRoute,
+  keySheetRoute,
+  statsRoute,
+])
+
+const router = new ReactRouter({ routeTree })
+
+const queryClient = new QueryClient()
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
+    <>
+    <QueryClientProvider client={queryClient}>
+
+      <RouterProvider
+        router={router}
+      />      
+
+    </QueryClientProvider>
+    </>
   )
 }
 
