@@ -31,12 +31,16 @@ import ExamForm from './layouts/ExamForm'
 import ExamGroupCreation from './views/ExamGroupCreation'
 import KeySheetCreation from './views/KeySheetCreation'
 import ExamCreationWizard from './views/ExamCreationWizard'
+import StatsView from './views/StatsView'
+import {enableMapSet} from "immer"
 
 const rootRoute = new RootRoute({
   component: () => (
     <>
-    <Outlet/>
-    <Navbar/>
+      <div className='m-0 p-0 h-screen'>
+        <Outlet/>
+        <Navbar/>
+      </div>
     </>
   ),
 })
@@ -64,10 +68,16 @@ const keySheetRoute = new Route({
   component: KeySheetCreation
 })
 
+const examFormRoute = new Route({
+  getParentRoute: () => rootRoute, 
+  path: 'examform',
+  component: ExamForm
+})
+
 const statsRoute = new Route({
   getParentRoute: () => rootRoute, 
   path: 'stats',
-  component: () => (<></>)
+  component: StatsView
 })
 
 const routeTree = rootRoute.addChildren([
@@ -76,6 +86,7 @@ const routeTree = rootRoute.addChildren([
   examGroupWizardRoute,
   keySheetRoute,
   statsRoute,
+  examFormRoute,
 ])
 
 const router = new ReactRouter({ routeTree })
