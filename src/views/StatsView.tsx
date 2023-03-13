@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
+import KeySheetSelector from '../components/selectors/KeySheetSelector'
 import actionsService from '../services/actionsService'
 import examGroupService from '../services/examGroupService'
 import keySheetService from '../services/keySheetService'
@@ -26,26 +27,7 @@ const StatsView = () => {
         <>
             <div className='flex flex-col items-center justify-center p-12'>
                 <div className='mb-5'>
-                    <label
-                        htmlFor='name'
-                        className='mb-3 block text-base font-medium text-[#07074D]'
-                    >
-                        KeySheet
-                    </label>
-                    <select
-                        name='examSelector'
-                        className='form-select'
-                        id='examSelector'
-                        onChange={(e) =>
-                            setKeySheet(Number.parseInt(e.target.value))
-                        }
-                    >
-                        {keySheetData.map((keySheet) => (
-                            <option value={keySheet.id}>
-                                {keySheet.key_class}
-                            </option>
-                        ))}
-                    </select>
+                    <KeySheetSelector handleSelect={e => setKeySheet(Number.parseInt(e.target.value))}/>
                 </div>
 
                 <div className='m-5'>
