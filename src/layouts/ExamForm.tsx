@@ -47,6 +47,8 @@ const ExamForm = () => {
             'exam_group',
             e.currentTarget.elements.examGroupSelector.value,
         )
+
+        // examFormData.append('name', e.currentTarget.elements.name.value)
         examFormData.append('exam_image_original', imageData[0])
 
         console.log(examFormData)
@@ -86,21 +88,21 @@ const ExamForm = () => {
         <div className='flex items-center justify-center p-12'>
             <div className='mx-auto w-full max-w-[550px] bg-white'>
                 <form onSubmit={handleSubmit} className='py-6 px-9'>
-                    {/* <div className="mb-5">
-                    <label
-                    htmlFor="name"
-                    className="mb-3 block text-base font-medium text-[#07074D]"
-                    >
-                    Name
-                    </label>
-                    <input
-                    type="text"
-                    name="text"
-                    id="name"
-                    placeholder="Name"
-                    className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                    />
-                </div> */}
+                    {/* <div className='mb-5'>
+                        <label
+                            htmlFor='name'
+                            className='mb-3 block text-base font-medium text-[#07074D]'
+                        >
+                            Name
+                        </label>
+                        <input
+                            type='text'
+                            name='text'
+                            id='name'
+                            placeholder='Name'
+                            className='w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md'
+                        />
+                    </div> */}
 
                     <StudentSelector
                         handleSelect={(e: any): void =>
@@ -110,21 +112,25 @@ const ExamForm = () => {
 
                     <div className='mb-5'>
                         <ExamGroupSelector
-                            handleSelect={(e) => 
-                                setSelectedExamGroup(Number.parseInt(e.target.value))
+                            handleSelect={(e) =>
+                                setSelectedExamGroup(
+                                    Number.parseInt(e.target.value),
+                                )
                             }
                         />
                     </div>
-                    {selectedExamGroup !== -1 &&
-                        <div className='mb-5'>
-                            <KeySheetSelector
-                                handleSelect={(e) =>
-                                    setSelectedKeySheet(Number.parseInt(e.target.value))
-                                }
-                                examGroupID={selectedExamGroup}
-                            />
-                        </div>
-                    }
+
+                    <div className='mb-5'>
+                        <KeySheetSelector
+                            handleSelect={(e) =>
+                                setSelectedKeySheet(
+                                    Number.parseInt(e.target.value),
+                                )
+                            }
+                            examGroupID={selectedExamGroup}
+                        />
+                    </div>
+
                     <div className='mb-6 pt-4'>
                         <label className='mb-5 block text-xl font-semibold text-[#07074D]'>
                             Upload File
