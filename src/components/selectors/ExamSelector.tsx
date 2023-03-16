@@ -9,7 +9,10 @@ interface ExamSelectProps {
 }
 
 const ExamSelector = (props: ExamSelectProps) => {
-    
+    const queryClient = useQueryClient()
+    queryClient.invalidateQueries()
+
+
     const fetchExam = (): Promise<ExamData[]> => 
         axios.get('/api/exams/')
             .then(res => res.data)
