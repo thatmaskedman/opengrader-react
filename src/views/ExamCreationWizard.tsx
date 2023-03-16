@@ -112,8 +112,7 @@ const ExamCreationWizard = () => {
                             <GradedExamFrame
                                 url={examURLGrid}
                             />
-                    
-                        
+                                      
                             <GradedExamFrame
                                 url={examURLGraded}
                             />
