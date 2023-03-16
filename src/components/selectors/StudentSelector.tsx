@@ -8,7 +8,8 @@ interface StudentSelectProps {
 }
 
 const StudentSelector = (props: StudentSelectProps) => {
-    // const queryClient = useQueryClient()
+    const queryClient = useQueryClient()
+    queryClient.invalidateQueries()
 
     const fetchStudents = (): Promise<StudentData[]> =>
         axios.get('/api/students/').then((res) => res.data)
