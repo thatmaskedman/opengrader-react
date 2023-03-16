@@ -4,12 +4,13 @@ import { FormEventHandler } from 'react'
 import { ExamGroupData, KeySheetData, StudentData } from '../../global/types'
 
 interface KeySheetSelectorProps {
-    examGroupID: number
+    examGroupID?: number
     handleSelect: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }
 
 const KeySheetSelector = (props: KeySheetSelectorProps) => {
-    // const queryClient = useQueryClient()
+    const queryClient = useQueryClient()
+    queryClient.invalidateQueries()
 
     const fetchKeySheets = (): Promise<KeySheetData[]> =>
         axios
