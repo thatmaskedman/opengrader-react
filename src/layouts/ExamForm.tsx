@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useState } from 'react'
+import { toast } from 'react-hot-toast'
 import ExamGroupSelector from '../components/selectors/ExamGroupSelector'
 import ExamSelector from '../components/selectors/ExamSelector'
 import KeySheetSelector from '../components/selectors/KeySheetSelector'
@@ -59,7 +60,8 @@ const ExamForm = () => {
                 },
             })
             .then((res) => res)
-
+        toast.success('Exam uploaded');
+        
         e.currentTarget.reset()
     }
 
