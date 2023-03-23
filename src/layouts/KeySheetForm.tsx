@@ -31,7 +31,6 @@ const KeySheetForm = (props: KeySheetFormProps) => {
             .get<KeySheetData>(`/api/keysheets/${props.key_sheet}/`)
             .then((res) => {
                 const keyQuestions = res.data.key_questions ?? []
-                console.log(keyQuestions)
                 return keyQuestions
             })
 
@@ -62,11 +61,11 @@ const KeySheetForm = (props: KeySheetFormProps) => {
     const { data, isLoading, isError } = keyQuestionQuery
 
     if (isLoading) {
-        return <></>
+        return <>Loading...</>
     }
 
     if (isError) {
-        return <></>
+        return <>Error</>
     }
 
     const handleSelect = (e: string, keyQuestion: KeyQuestionData) => {
