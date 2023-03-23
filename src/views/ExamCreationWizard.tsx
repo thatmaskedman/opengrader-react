@@ -17,6 +17,7 @@ import ExamSelector from '../components/selectors/ExamSelector'
 import StudentSelector from '../components/selectors/StudentSelector'
 import KeySheetSelector from '../components/selectors/KeySheetSelector'
 import ExamGroupSelector from '../components/selectors/ExamGroupSelector'
+import toast from 'react-hot-toast'
 
 const ExamCreationWizard = () => {
     interface FormElements extends HTMLFormControlsCollection {
@@ -51,7 +52,12 @@ const ExamCreationWizard = () => {
     const { data, isSuccess, isLoading, isError } = examQuery
 
     const handleGrade = () => {
-        actionsService.gradeExam(selectedExam)
+        const gradePromise = actionsService.gradeExam(selectedExam)
+        toast.promise(gradePromise, {
+            loading: 'Grading exam',
+            success: 'Exam Succesfully Graded',
+            error: 'Could not process.'  
+        })
         queryClient.invalidateQueries()
     }
 
@@ -127,36 +133,7 @@ const ExamCreationWizard = () => {
                                     Grade
                                 </button>
                             </div>
-                            <div className='m-5'>
-                                <label htmlFor=''>Graded</label>
-                                <Switch
-                                    checked={graded}
-                                    onChange={setGraded}
-                                    as={Fragment}
-                                >
-                                    {({ checked }) => (
-                                        /* Use the `checked` state to conditionally style the button. */
-                                        <button
-                                            className={`${
-                                                checked
-                                                    ? 'bg-blue-600'
-                                                    : 'bg-gray-200'
-                                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                                        >
-                                            <span className='sr-only'>
-                                                Enable notifications
-                                            </span>
-                                            <span
-                                                className={`${
-                                                    checked
-                                                        ? 'translate-x-6'
-                                                        : 'translate-x-1'
-                                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                                            />
-                                        </button>
-                                    )}
-                                </Switch>
-                            </div>
+
                         </div>
                     </>
                 )}
