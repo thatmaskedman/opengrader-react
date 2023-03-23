@@ -33,11 +33,12 @@ import KeySheetCreation from './views/KeySheetCreation'
 import ExamCreationWizard from './views/ExamCreationWizard'
 import StatsView from './views/StatsView'
 import {enableMapSet} from "immer"
+import { Toaster } from 'react-hot-toast'
 
 const rootRoute = new RootRoute({
   component: () => (
     <>
-      <div className='m-0 p-0 h-screen'>
+      <div className='m-2 p-2 h-screen'>
         <Outlet/>
         <Navbar/>
       </div>
@@ -104,6 +105,7 @@ function App() {
       />      
 
     </QueryClientProvider>
+    <Toaster />
     </>
   )
 }
