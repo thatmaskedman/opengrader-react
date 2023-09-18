@@ -4,30 +4,31 @@ import KeySheetForm from '../layouts/KeySheetForm'
 import examGroupService from '../services/examGroupService'
 import keySheetService from '../services/keySheetService'
 import ExamGroupSelector from '../components/selectors/ExamGroupSelector'
+import KeySheetSelector from '../components/selectors/KeySheetSelector'
+
 
 const KeySheetCreation = () => {
+    const [selectedExamGroup, setSelectedExamGroup] = useState(-1)
+    const [selectedKeySheet, setSelectedKeySheet] = useState(-1)
+    const [questionNum, setQuestionNum] = useState(0)
+
     const queryClient = useQueryClient()
 
     const examGroupQuery = useQuery({
-        queryKey: ['examGroups'],
+        queryKey: ['examGroups', selectedExamGroup],
         queryFn: examGroupService.getAllExamGroups,
     })
 
     const keySheetQuery = useQuery({
-        queryKey: ['keySheet'],
+        queryKey: ['keySheet', selectedKeySheet],
         queryFn: keySheetService.getAllKeySheets,
+        initialData: [],
+
     })
 
     const data = examGroupQuery.data ?? []
     const keySheetData = keySheetQuery.data ?? []
 
-    const [selectedExamGroup, setSelectedExamGroup] = useState(
-        data[0]?.id ?? -1,
-    )
-    const [selectedKeySheet, setSelectedKeySheet] = useState(
-        keySheetData[0]?.id ?? -1,
-    )
-    const [questionNum, setQuestionNum] = useState(0)
 
     const name = data.find((item) => item.id === selectedExamGroup)?.name ?? 0
 
@@ -39,6 +40,10 @@ const KeySheetCreation = () => {
         console.log(e.target.value)
         setQuestionNum(questionNum)
     }
+    const handleKeySheetSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        console.log(e.target.value)
+        setSelectedKeySheet(Number.parseInt(e.target.value))
+    }
 
     return (
         <>
@@ -47,32 +52,11 @@ const KeySheetCreation = () => {
             </div>
 
             <div className='mx-10 mb-5'>
-                <label
-                    htmlFor='examGroupSelector'
-                    className='font-base font-medium'
-                >
-                    Key
-                </label>
 
-                <select
-                    name='examGroupSelector'
-                    onChange={(e) =>
-                        setSelectedKeySheet(Number.parseInt(e.target.value))
-                    }
-                    value={selectedKeySheet}
-                    className='form-select'
-                    id='examGroupSelector'
-                >
-                    {keySheetData
-                        .filter((item) => item.exam_group === selectedExamGroup)
-                        .map((keySheet) => (
-                            <option key={keySheet.id}
-                                value={keySheet.id}
-                            >{`${keySheet.key_class.toUpperCase()}: ${name}`}</option>
-                        ))}
-                </select>
+                <KeySheetSelector handleSelect={handleKeySheetSelect} examGroupID={selectedExamGroup}/>
+
             </div>
-            {questionNum !== 0 && (
+            {(questionNum !== 0 && selectedKeySheet !== -1) && (
                 <KeySheetForm
                     questionNum={questionNum}
                     key_sheet={selectedKeySheet}
