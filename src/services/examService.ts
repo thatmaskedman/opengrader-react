@@ -25,12 +25,7 @@ const examService = {
         })
     },
 
-    deleteExam: (id: number) => {
-        httpService.delete(`/exams/${id}`)
-        .then(res => {
-             
-        })
-    },
+    deleteExam: (id: number) => httpService.delete(`/exams/${id}`),
 
     updateExamQuestion: (id: number, fields: QuestionData) => {
         httpService.put(`/questions/${id}`)
@@ -44,6 +39,13 @@ const examService = {
         .then(res => {
              
         })
+    },
+
+    preview: (fields: ExamData) => {
+        httpService.post('/preview', fields)
+            .then(res => {
+                // let data = res.data   
+            })
     },
 }
 
