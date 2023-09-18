@@ -4,18 +4,20 @@ import { FormEventHandler } from 'react'
 import { StudentData } from '../../global/types'
 
 interface StudentSelectProps {
-    handleSelect: FormEventHandler<HTMLDivElement> & ((value: string) => void)
+    handleSelect: FormEventHandler<HTMLDivElement> & ((value: string) => void);
+    examGroupID?: number
+    disabled: boolean
 }
 
 const StudentSelector = (props: StudentSelectProps) => {
     const queryClient = useQueryClient()
-    queryClient.invalidateQueries()
 
     const fetchStudents = (): Promise<StudentData[]> =>
-        axios.get('/api/students/').then((res) => res.data)
+        axios.get('/api/students/', {params: {examgroup: props.examGroupID}})
+            .then((res) => res.data)
 
     const studentQuery = useQuery({
-        queryKey: ['students'],
+        queryKey: ['students', props.examGroupID],
         queryFn: fetchStudents,
     })
 
@@ -41,6 +43,7 @@ const StudentSelector = (props: StudentSelectProps) => {
                 name='studentSelector'
                 className='form-select w-full block'
                 id='studentGroupSelector'
+                disabled={props.disabled}
             >
                 {data.map((student) => (
                     <option key={student.id} value={student.id}>{student.name}</option>

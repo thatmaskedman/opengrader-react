@@ -10,11 +10,9 @@ interface ExamSelectProps {
 
 const ExamSelector = (props: ExamSelectProps) => {
     const queryClient = useQueryClient()
-    queryClient.invalidateQueries()
-
 
     const fetchExam = (): Promise<ExamData[]> => 
-        axios.get('/api/exams/')
+        axios.get('/api/exams/', {params: {examgroup: props.examGroup}} )
             .then(res => res.data)
 
     const fetchStudentNames = (): Promise<StudentData[]> =>
@@ -22,12 +20,12 @@ const ExamSelector = (props: ExamSelectProps) => {
             .then(res => res.data)
 
     const studentQuery = useQuery({
-        queryKey: ['students'], 
+        queryKey: ['students', props.examGroup], 
         queryFn:  fetchStudentNames
     })
     
     const examQuery = useQuery({
-        queryKey: ['exams'],
+        queryKey: ['exams', props.examGroup],
         queryFn: fetchExam
     })
 
@@ -48,8 +46,8 @@ const ExamSelector = (props: ExamSelectProps) => {
 
     return (
         <div className="mb-5">
-            <label htmlFor="studentSelector" className="mb-3 block text-base font-medium text-[#07074D]" >Keysheet</label>
-            <select name="examGroupSelector" onSelect={props.handleSelect} className="form-select w-full block" onChange={props.handleSelect} id="examSelector">
+            <label htmlFor="examSelector" className="mb-3 block text-base font-medium text-[#07074D]" >Exam from: </label>
+            <select name="examSelector" className="form-select w-full block" onChange={props.handleSelect} id="examSelector">
                 {examData.map(exam =>
                     <option value={exam.id}> {studentData.find(s => s.id === exam.student)?.name}</option>
                 )}

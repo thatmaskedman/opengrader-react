@@ -10,15 +10,14 @@ interface KeySheetSelectorProps {
 
 const KeySheetSelector = (props: KeySheetSelectorProps) => {
     const queryClient = useQueryClient()
-    queryClient.invalidateQueries()
 
     const fetchKeySheets = (): Promise<KeySheetData[]> =>
         axios
-            .get<KeySheetData[]>('/api/keysheets/')
+            .get<KeySheetData[]>('/api/keysheets/', {params: {examgroup: props.examGroupID}})
             .then((res) => res.data)
 
     const keySheetQuery = useQuery({
-        queryKey: ['keysheets'],
+        queryKey: ['keysheets', props.examGroupID],
         queryFn: fetchKeySheets,
     })
 
@@ -26,7 +25,7 @@ const KeySheetSelector = (props: KeySheetSelectorProps) => {
         axios.get(`/api/examgroups/`).then((res) => res.data)
 
     const examGroupQuery = useQuery({
-        queryKey: ['examgroups'],
+        queryKey: ['examgroups', props.examGroupID],
         queryFn: fetchExamGroupNames,
     })
 
@@ -59,6 +58,7 @@ const KeySheetSelector = (props: KeySheetSelectorProps) => {
                 id='keySheetSelector'
                 onChange={props.handleSelect}
             >
+
                 {keySheetData.map((keySheet) => (
                     <option
                         value={keySheet.id}
