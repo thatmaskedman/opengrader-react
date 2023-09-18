@@ -38,6 +38,10 @@ const ExamCreationWizard = () => {
     const [selectedExamGroup, setSelectedExamGroup] = useState(-1)
     const [keySheetID, setKeySheetID] = useState(-1)
     const [graded, setGraded] = useState(false)
+    const [originalURL, setOriginalURL] = useState<string>()
+    const [markedURL, setMarkedURL] = useState<string>()
+    const [gradedURL, setGradedURL] = useState<string>()
+
 
     const queryClient = useQueryClient()
 
@@ -53,12 +57,27 @@ const ExamCreationWizard = () => {
 
     const handleGrade = () => {
         const gradePromise = actionsService.gradeExam(selectedExam)
+        
         toast.promise(gradePromise, {
-            loading: 'Grading exam',
-            success: 'Exam Succesfully Graded',
+            loading: 'Grading exam.',
+            success: 'Exam Succesfully Graded.',
             error: 'Could not process.'  
         })
-        queryClient.invalidateQueries()
+
+        queryClient.invalidateQueries({queryKey: ['examImages']})
+        
+    }
+
+    const handleDelete = () => {
+        const deletePromise = examService.deleteExam(selectedExam)
+        toast.promise(deletePromise, {
+            loading: 'Deleting exam.',
+            success: 'Exam Succesfully Deleted.',
+            error: 'Could not process.'  
+        })
+
+        queryClient.invalidateQueries({ queryKey: ['exams'] })
+        setSelectedExam(-1)
     }
 
     const handleExamGroupSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -66,7 +85,6 @@ const ExamCreationWizard = () => {
         const examGroupId = e.target.value
         console.log(examGroupId)
         setSelectedExamGroup(Number.parseInt(examGroupId))
-        queryClient.invalidateQueries()
     }
 
     const handleExamSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -75,23 +93,28 @@ const ExamCreationWizard = () => {
         const examId = e.target.value
         console.log(examId)
         setSelectedExam(Number.parseInt(examId))
+
+        const examURLOriginal = data?.find(
+            (item) => item.id === selectedExam,
+        )?.exam_image_original
+    
+        const examURLGraded = data?.find(
+            (item) => item.id === selectedExam,
+        )?.exam_image_graded
+    
+        const examURLGrid = data?.find(
+            (item) => item.id === selectedExam,
+        )?.exam_image_grid
+
+        setOriginalURL(examURLOriginal)
+        setMarkedURL(examURLGrid)
+        setGradedURL(examURLGraded)
+
     }
 
     if (isLoading) return 'Loading'
 
     if (isError) return 'Error'
-
-    const examURLOriginal = data.find(
-        (item) => item.id === selectedExam,
-    )?.exam_image_original
-
-    const examURLGraded = data.find(
-        (item) => item.id === selectedExam,
-    )?.exam_image_graded
-
-    const examURLGrid = data.find(
-        (item) => item.id === selectedExam,
-    )?.exam_image_grid
 
 
     return (
@@ -99,10 +122,10 @@ const ExamCreationWizard = () => {
             <div className='h-screen'>
                 <div className='mx-10 mb-5'>
                     <ExamGroupSelector handleSelect={handleExamGroupSelect} />
-                </div>
 
+                </div>
                 <div className='mx-10 mb-5'>
-                    <ExamSelector handleSelect={handleExamSelect} />
+                    <ExamSelector handleSelect={handleExamSelect} examGroup={selectedExamGroup}/>
                 </div>
 
                 <button className=''></button>
@@ -110,20 +133,10 @@ const ExamCreationWizard = () => {
                 {selectedExam !== -1 && (
                     <>
                         <GradedExamFrame
-                            url={examURLOriginal}
+                            url={originalURL}
+                            examID={selectedExam}
                         />
-                        {examURLGraded &&
-                        <>
 
-                            <GradedExamFrame
-                                url={examURLGrid}
-                            />
-                                      
-                            <GradedExamFrame
-                                url={examURLGraded}
-                            />
-                        </>
-                        }
                         <div className='flex items-center justify-center p-12'>
                             <div className='m-5'>
                                 <button
@@ -131,6 +144,15 @@ const ExamCreationWizard = () => {
                                     className='hover:shadow-form w-50 rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none'
                                 >
                                     Grade
+                                </button>
+                            </div>
+
+                            <div className='m-5'>
+                                <button
+                                    onClick={handleDelete}
+                                    className='hover:shadow-form w-50 rounded-md bg-[#d84c4c] py-3 px-8 text-center text-base font-semibold text-white outline-none'
+                                >
+                                    Delete
                                 </button>
                             </div>
 
