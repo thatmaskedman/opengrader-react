@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
@@ -21,6 +21,8 @@ const ExamForm = () => {
         date: HTMLInputElement
     }
 
+    const queryClient = useQueryClient()
+
     interface UsernameFormElement extends HTMLFormElement {
         readonly elements: FormElements
     }
@@ -30,6 +32,8 @@ const ExamForm = () => {
 
     const handleSubmit = (e: React.SyntheticEvent<UsernameFormElement>) => {
         e.preventDefault()
+        
+        if (selectedExamGroup === -1) return
 
         let examFormData = new FormData()
 
@@ -90,6 +94,17 @@ const ExamForm = () => {
         <div className='flex items-center justify-center p-12'>
             <div className='mx-auto w-full max-w-[550px] bg-white'>
                 <form onSubmit={handleSubmit} className='py-6 px-9'>
+
+                    <div className='mb-5'>
+                        <ExamGroupSelector
+                            handleSelect={(e) => 
+                                setSelectedExamGroup(
+                                    Number.parseInt(e.target.value),
+                                )
+                            }
+                        />
+                    </div>
+
                     {/* <div className='mb-5'>
                         <label
                             htmlFor='name'
@@ -105,33 +120,28 @@ const ExamForm = () => {
                             className='w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md'
                         />
                     </div> */}
-
-                    <StudentSelector
-                        handleSelect={(e: any): void =>
-                            setSelectedStudent(e.target.value)
-                        }
-                    />
-
-                    <div className='mb-5'>
-                        <ExamGroupSelector
-                            handleSelect={(e) =>
-                                setSelectedExamGroup(
-                                    Number.parseInt(e.target.value),
-                                )
-                            }
-                        />
-                    </div>
-
-                    <div className='mb-5'>
-                        <KeySheetSelector
-                            handleSelect={(e) =>
-                                setSelectedKeySheet(
-                                    Number.parseInt(e.target.value),
-                                )
+                    {selectedExamGroup != -1 && 
+                        <StudentSelector
+                            handleSelect={(e: any): void =>
+                                setSelectedStudent(e.target.value)
                             }
                             examGroupID={selectedExamGroup}
+                            disabled={selectedExamGroup == -1}
                         />
-                    </div>
+                    }
+
+                    {selectedExamGroup != -1 && 
+                        <div className='mb-5'>
+                            <KeySheetSelector
+                                handleSelect={(e) =>
+                                    setSelectedKeySheet(
+                                        Number.parseInt(e.target.value),
+                                    )
+                                }
+                                examGroupID={selectedExamGroup}
+                                />
+                        </div>
+                    }
 
                     <div className='mb-6 pt-4'>
                         <label className='mb-5 block text-xl font-semibold text-[#07074D]'>
